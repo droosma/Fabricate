@@ -93,6 +93,6 @@ public class Example
 
         var emitted = BuildMethodEmitter.Emit(typeSymbol, constructor, ImmutableArray<PropertyInfo>.Empty);
 
-        emitted.Should().Be("    public global::TestApp.EmptyThing Build() => new global::TestApp.EmptyThing();\r\n");
+        emitted.Should().Be($"    public global::TestApp.EmptyThing Build() => new global::TestApp.EmptyThing();{Environment.NewLine}");
     }
 }
