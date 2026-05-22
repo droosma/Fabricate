@@ -22,4 +22,15 @@ public class FactoryTests
 
         patient.Name.Should().Be("Factory Patient");
     }
+
+    [Fact]
+    public void Factory_A_ExposesAllBuilders()
+    {
+        A.Appointment.Should().BeOfType<AppointmentBuilder>();
+        A.Money.Should().BeOfType<MoneyBuilder>();
+        A.Patient.Should().BeOfType<PatientBuilder>();
+        A.PatientWithAllergies.Should().BeOfType<PatientWithAllergiesBuilder>();
+        A.PersonWithAddress.Should().BeOfType<PersonWithAddressBuilder>();
+        A.PersonWithTwoAddresses.Should().BeOfType<PersonWithTwoAddressesBuilder>();
+    }
 }

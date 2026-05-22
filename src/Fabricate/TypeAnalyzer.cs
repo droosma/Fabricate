@@ -84,13 +84,6 @@ public static class TypeAnalyzer
             }
         }
 
-        // Fall back to parameterless constructor if available
-        var parameterless = constructors.FirstOrDefault(c => c.Parameters.Length == 0);
-        if (parameterless != null)
-        {
-            return new ConstructorInfo(ImmutableArray<ConstructorParameterInfo>.Empty);
-        }
-
         return null;
     }
 

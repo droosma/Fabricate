@@ -67,6 +67,7 @@ public partial class AppointmentBuilder
         var generated = generatedSources["AppointmentBuilder.g.cs"];
         generated.Should().Contain("public AppointmentBuilder WithDoctorName(");
         generated.Should().Contain("public AppointmentBuilder WithScheduledAt(");
+        generated.Should().Contain("=> new global::TestApp.Appointment(_doctorName, _scheduledAt);");
     }
 
     [Fact]
@@ -92,6 +93,7 @@ public partial class MoneyBuilder
         var generated = generatedSources["MoneyBuilder.g.cs"];
         generated.Should().Contain("public MoneyBuilder WithAmount(");
         generated.Should().Contain("public MoneyBuilder WithCurrency(");
+        generated.Should().Contain("=> new global::TestApp.Money(_amount, _currency);");
     }
 
     [Fact]
@@ -155,6 +157,7 @@ public partial class PatientWithAllergiesBuilder
         var generatedSources = await RunGenerator(source);
         var generated = generatedSources["PatientWithAllergiesBuilder.g.cs"];
         generated.Should().Contain("WithAllergies(params");
+        generated.Should().Contain("Allergies = new global::System.Collections.Generic.List<string>(_allergies),");
     }
 
     [Fact]

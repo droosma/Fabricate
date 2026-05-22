@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>obj\$(Configuration)\$(TargetFramework)\Fabricate</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
