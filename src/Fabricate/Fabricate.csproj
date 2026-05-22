@@ -15,8 +15,16 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/droosma/Fabricate</PackageProjectUrl>
     <RepositoryUrl>https://github.com/droosma/Fabricate</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageTags>source-generator;builder-pattern;testing;code-generation</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <!-- Source Link & debug step-through -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
 
     <!-- Ensure the generator is packaged correctly -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -27,6 +35,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Pack the generator into the analyzers folder -->
