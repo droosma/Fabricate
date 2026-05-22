@@ -1,0 +1,18 @@
+{
+  "stryker-config": {
+    "project": "src/Fabricate/Fabricate.csproj",
+    "test-projects": [
+      "tests/Fabricate.Tests/Fabricate.Tests.csproj"
+    ],
+    "reporters": ["html", "progress", "cleartext"],
+    "thresholds": {
+      "high": 100,
+      "low": 100,
+      "break": 100
+    },
+    "mutate": [
+      "src/Fabricate/**/*.cs",
+      "!src/Fabricate/**/obj/**/*.cs"
+    ]
+  }
+}
