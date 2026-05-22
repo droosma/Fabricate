@@ -34,14 +34,7 @@ public static class BuildMethodEmitter
 
         sb.AppendLine();
         sb.Append($"        => new {targetTypeName}(");
-
-        if (constructorParams.Length > 0)
-        {
-            var paramStrings = constructorParams
-                .Select(p => NamingStrategy.GetFieldName(p.PropertyName));
-            sb.Append(string.Join(", ", paramStrings));
-        }
-
+        sb.Append(string.Join(", ", constructorParams.Select(p => NamingStrategy.GetFieldName(p.PropertyName))));
         sb.Append(")");
 
         if (initializerProperties.Count > 0)

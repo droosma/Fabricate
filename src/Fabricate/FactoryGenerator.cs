@@ -37,14 +37,16 @@ public sealed class FactoryGenerator : IIncrementalGenerator
             var entries = data.Left;
             var factoryNames = data.Right;
 
-            if (entries.IsDefaultOrEmpty)
+            var validEntries = entries.Where(e => e is not null).ToImmutableArray();
+            // Stryker disable once Statement : empty validEntries produces no output in GenerateFactory either
+            if (validEntries.Length == 0)
                 return;
 
             var className = factoryNames.IsDefaultOrEmpty || factoryNames[0] is null
                 ? "A"
                 : factoryNames[0]!;
 
-            GenerateFactory(spc, className, entries!);
+            GenerateFactory(spc, className, validEntries!);
         });
     }
 
@@ -94,7 +96,6 @@ public sealed class FactoryGenerator : IIncrementalGenerator
     {
         // Group by namespace
         var byNamespace = entries
-            .Where(e => e is not null)
             .GroupBy(e => e!.Namespace);
 
         foreach (var group in byNamespace)
@@ -116,8 +117,7 @@ public sealed class FactoryGenerator : IIncrementalGenerator
 
             foreach (var entry in group)
             {
-                if (entry is null) continue;
-                sb.AppendLine($"    public static {entry.BuilderFullName} {entry.TargetTypeName} => new();");
+                sb.AppendLine($"    public static {entry!.BuilderFullName} {entry.TargetTypeName} => new();");
             }
 
             sb.AppendLine("}");

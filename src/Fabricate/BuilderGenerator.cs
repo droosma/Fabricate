@@ -22,6 +22,7 @@ public sealed class BuilderGenerator : IIncrementalGenerator
 
         context.RegisterSourceOutput(builderDeclarations, static (spc, info) =>
         {
+            // Stryker disable once Statement : defensive guard; nulls are filtered by Where clause above
             if (info is null) return;
             GenerateBuilder(spc, info);
         });
@@ -37,6 +38,7 @@ public sealed class BuilderGenerator : IIncrementalGenerator
             return null;
 
         var attributeClass = attributeData.AttributeClass;
+        // Stryker disable once Logical : FabricateAttribute<T> always has exactly 1 type argument
         if (attributeClass is null || !attributeClass.IsGenericType || attributeClass.TypeArguments.Length != 1)
             return null;
 

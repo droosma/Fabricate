@@ -41,6 +41,7 @@ public static class TypeAnalyzer
         }
 
         // DistinctBy not available in netstandard2.0, use GroupBy
+        // Stryker disable once Linq : GroupBy groups are never empty, First() is safe
         return properties
             .GroupBy(p => p.Name)
             .Select(g => g.First())

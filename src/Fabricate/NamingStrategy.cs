@@ -10,6 +10,7 @@ public static class NamingStrategy
 {
     public static bool IsBclType(ITypeSymbol type)
     {
+        // Stryker disable once String : ContainingNamespace is never null for types we process
         var ns = type.ContainingNamespace?.ToDisplayString() ?? "";
         
         // Unwrap nullable
@@ -37,14 +38,6 @@ public static class NamingStrategy
             {
                 effectiveType = elementType;
             }
-        }
-
-        // Unwrap nullable for type checking
-        if (effectiveType is INamedTypeSymbol nullable &&
-            nullable.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T &&
-            nullable.TypeArguments.Length == 1)
-        {
-            effectiveType = nullable.TypeArguments[0];
         }
 
         if (IsBclType(effectiveType))

@@ -35,10 +35,8 @@ public static class WithMethodEmitter
         foreach (var prop in properties)
         {
             var typeKey = GetTypeKey(prop.Type);
-            if (counts.ContainsKey(typeKey))
-                counts[typeKey]++;
-            else
-                counts[typeKey] = 1;
+            counts.TryGetValue(typeKey, out var current);
+            counts[typeKey] = current + 1;
         }
         return counts;
     }
@@ -113,7 +111,6 @@ public static class WithMethodEmitter
     {
         var fieldName = NamingStrategy.GetFieldName(property.Name);
         var methodName = NamingStrategy.GetWithoutMethodName(property);
-        var nullValue = property.Type.IsValueType ? "null" : "null";
 
         sb.AppendLine($"    public {builderClassName} {methodName}()");
         sb.AppendLine("    {");
