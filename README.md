@@ -1,5 +1,10 @@
 # Fabricate
 
+[![NuGet version](https://img.shields.io/nuget/v/Fabricate.svg)](https://www.nuget.org/packages/Fabricate)
+[![Build status](https://img.shields.io/github/actions/workflow/status/droosma/Fabricate/ci.yml?branch=main)](https://github.com/droosma/Fabricate/actions)
+[![Mutation testing](https://img.shields.io/endpoint?url=https://badge-api.stryker-mutator.io/github.com/droosma/Fabricate/main)](https://dashboard.stryker-mutator.io/reports/github.com/droosma/Fabricate/main)
+[![License](https://img.shields.io/github/license/droosma/Fabricate)](LICENSE)
+
 A .NET source generator that creates builder pattern classes for test projects. Define what a valid object looks like once, get fluent `With` methods for free.
 
 ## Why?
