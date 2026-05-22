@@ -102,9 +102,11 @@ jobs:
           with open('$REPORT') as f:
               data = json.load(f)
           files = data.get('files', {})
-          total_detected = sum(1 for f in files.values() for m in f.get('mutants', []) if m['status'] in ('Killed', 'Timeout'))
-          total_mutants = sum(len(f.get('mutants', [])) for f in files.values())
-          score = (total_detected / total_mutants * 100) if total_mutants > 0 else 100
+          killed = sum(1 for f in files.values() for m in f.get('mutants', []) if m['status'] in ('Killed', 'Timeout'))
+          survived = sum(1 for f in files.values() for m in f.get('mutants', []) if m['status'] == 'Survived')
+          no_cov = sum(1 for f in files.values() for m in f.get('mutants', []) if m['status'] == 'NoCoverage')
+          total = killed + survived + no_cov
+          score = (killed / total * 100) if total > 0 else 100
           print(f'{score:.1f}')
           ")
           echo "Mutation score: ${SCORE}%"
