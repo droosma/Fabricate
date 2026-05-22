@@ -5,8 +5,8 @@
       "tests/Fabricate.Tests/Fabricate.Tests.csproj"
     ],
     "reporters": ["html", "progress", "cleartext", "dashboard"],
-    "dashboard": {
-      "project": "github.com/droosma/Fabricate",
+    "project-info": {
+      "name": "github.com/droosma/Fabricate",
       "version": "main"
     },
     "thresholds": {
