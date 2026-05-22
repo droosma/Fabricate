@@ -81,14 +81,7 @@ jobs:
         run: dotnet tool install -g dotnet-stryker
       
       - name: Run Stryker
-        env:
-          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
-        run: |
-          if [ -n "$STRYKER_DASHBOARD_API_KEY" ]; then
-            dotnet stryker --config-file stryker-config.json
-          else
-            dotnet stryker --config-file stryker-config.json --reporter "html" --reporter "progress" --reporter "cleartext"
-          fi
+        run: dotnet stryker --config-file stryker-config.json
       
       - name: Upload Stryker report
         uses: actions/upload-artifact@v4

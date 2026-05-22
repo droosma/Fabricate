@@ -4,11 +4,12 @@
     "test-projects": [
       "tests/Fabricate.Tests/Fabricate.Tests.csproj"
     ],
-    "reporters": ["html", "progress", "cleartext", "dashboard"],
-    "project-info": {
-      "name": "github.com/droosma/Fabricate",
-      "version": "main"
-    },
+    "reporters": [
+      "progress",
+      "html",
+      "cleartext",
+      "json"
+    ],
     "thresholds": {
       "high": 100,
       "low": 100,
