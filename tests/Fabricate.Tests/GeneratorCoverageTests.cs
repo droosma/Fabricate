@@ -337,7 +337,8 @@ using System;
             "global::TestApp.PatientBuilder",
             "PatientBuilder",
             "Patient",
-            "TestApp");
+            "TestApp",
+            null);
 
         entry.GetType().GetProperty("BuilderName")!.GetValue(entry).Should().Be("PatientBuilder");
     }

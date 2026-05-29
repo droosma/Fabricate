@@ -58,4 +58,28 @@ public static class NamingStrategy
     {
         return $"_{char.ToLowerInvariant(propertyName[0])}{propertyName.Substring(1)}";
     }
+
+    /// <summary>
+    /// Maps a symbol's accessibility to the C# keyword(s) used when re-declaring the
+    /// <c>ValidInstance</c> partial method, so the generated declaration matches the
+    /// user's implementing declaration exactly (partial method signatures must agree).
+    /// </summary>
+    public static string AccessibilityKeyword(Accessibility accessibility)
+    {
+        switch (accessibility)
+        {
+            case Accessibility.Public:
+                return "public";
+            case Accessibility.Internal:
+                return "internal";
+            case Accessibility.Protected:
+                return "protected";
+            case Accessibility.ProtectedOrInternal:
+                return "protected internal";
+            case Accessibility.ProtectedAndInternal:
+                return "private protected";
+            default:
+                return "private";
+        }
+    }
 }

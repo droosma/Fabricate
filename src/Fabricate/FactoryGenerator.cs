@@ -67,11 +67,14 @@ public sealed class FactoryGenerator : IIncrementalGenerator
             ? null
             : builderSymbol.ContainingNamespace.ToDisplayString();
 
+        var location = (context.TargetNode as ClassDeclarationSyntax)?.GetLocation();
+
         return new FactoryEntry(
             builderSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
             builderSymbol.Name,
             targetType.Name,
-            builderNamespace);
+            builderNamespace,
+            location);
     }
 
     private static string? GetFactoryName(GeneratorAttributeSyntaxContext context)
@@ -115,9 +118,20 @@ public sealed class FactoryGenerator : IIncrementalGenerator
             sb.AppendLine($"public static partial class {className}");
             sb.AppendLine("{");
 
+            var emittedProperties = new System.Collections.Generic.HashSet<string>(System.StringComparer.Ordinal);
             foreach (var entry in group)
             {
-                sb.AppendLine($"    public static {entry!.BuilderFullName} {entry.TargetTypeName} => new();");
+                if (!emittedProperties.Add(entry!.TargetTypeName))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        DiagnosticDescriptors.DuplicateFactoryProperty,
+                        entry.Location,
+                        entry.TargetTypeName,
+                        className));
+                    continue;
+                }
+
+                sb.AppendLine($"    public static {entry.BuilderFullName} {entry.TargetTypeName} => new();");
             }
 
             sb.AppendLine("}");
@@ -136,12 +150,14 @@ internal sealed class FactoryEntry
     public string BuilderName { get; }
     public string TargetTypeName { get; }
     public string? Namespace { get; }
+    public Location? Location { get; }
 
-    public FactoryEntry(string builderFullName, string builderName, string targetTypeName, string? ns)
+    public FactoryEntry(string builderFullName, string builderName, string targetTypeName, string? ns, Location? location)
     {
         BuilderFullName = builderFullName;
         BuilderName = builderName;
         TargetTypeName = targetTypeName;
         Namespace = ns;
+        Location = location;
     }
 }

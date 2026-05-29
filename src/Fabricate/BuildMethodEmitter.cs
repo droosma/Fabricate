@@ -34,7 +34,7 @@ public static class BuildMethodEmitter
 
         sb.AppendLine();
         sb.Append($"        => new {targetTypeName}(");
-        sb.Append(string.Join(", ", constructorParams.Select(p => NamingStrategy.GetFieldName(p.PropertyName))));
+        sb.Append(string.Join(", ", constructorParams.Select(p => BuildConstructorArgument(p, properties))));
         sb.Append(")");
 
         if (initializerProperties.Count > 0)
@@ -44,10 +44,13 @@ public static class BuildMethodEmitter
             foreach (var prop in initializerProperties)
             {
                 var fieldName = NamingStrategy.GetFieldName(prop.Name);
-                if (TypeAnalyzer.IsCollectionType(prop.Type))
+                if (TypeAnalyzer.IsMaterializableCollection(prop.Type))
                 {
-                    var collectionTypeName = prop.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    sb.AppendLine($"            {prop.Name} = new {collectionTypeName}({fieldName}),");
+                    var materialization = TypeAnalyzer.GetCollectionMaterialization(prop.Type, fieldName);
+                    var value = prop.IsNullable
+                        ? $"{fieldName} == null ? null : {materialization}"
+                        : materialization;
+                    sb.AppendLine($"            {prop.Name} = {value},");
                 }
                 else
                 {
@@ -59,6 +62,23 @@ public static class BuildMethodEmitter
 
         sb.AppendLine(";");
         return sb.ToString();
+    }
+
+    private static string BuildConstructorArgument(
+        ConstructorParameterInfo parameter,
+        ImmutableArray<PropertyInfo> properties)
+    {
+        var fieldName = NamingStrategy.GetFieldName(parameter.PropertyName);
+
+        if (TypeAnalyzer.IsMaterializableCollection(parameter.Type))
+        {
+            var materialization = TypeAnalyzer.GetCollectionMaterialization(parameter.Type, fieldName);
+            var isNullable = properties.Any(p =>
+                string.Equals(p.Name, parameter.PropertyName, System.StringComparison.Ordinal) && p.IsNullable);
+            return isNullable ? $"{fieldName} == null ? null : {materialization}" : materialization;
+        }
+
+        return fieldName;
     }
 
     public static string EmitImplicitOperator(

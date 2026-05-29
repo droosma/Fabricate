@@ -22,7 +22,11 @@ public static class TypeAnalyzer
                 if (member.IsStatic || member.IsIndexer)
                     continue;
 
-                if (member.DeclaredAccessibility != Accessibility.Public)
+                // A public getter is required: the generated builder seeds every field from
+                // ValidInstance() by reading the property, so write-only properties are unusable.
+                // This getter check also subsumes a property-level accessibility check, because a
+                // non-public property can never expose a public getter.
+                if (member.GetMethod is null || member.GetMethod.DeclaredAccessibility != Accessibility.Public)
                     continue;
 
                 // Include properties that are settable (set or init) or are constructor parameters
@@ -113,6 +117,54 @@ public static class TypeAnalyzer
             return namedType.TypeArguments[0];
 
         return null;
+    }
+
+    /// <summary>
+    /// True when the type is a collection whose element type is known, so it can be stored as an
+    /// array internally and materialized back via <see cref="GetCollectionMaterialization"/>.
+    /// Non-generic collections (e.g. <c>System.Collections.IEnumerable</c>) return false and are
+    /// treated as scalars.
+    /// </summary>
+    public static bool IsMaterializableCollection(ITypeSymbol type)
+        => IsCollectionType(type) && GetCollectionElementType(type) != null;
+
+    /// <summary>
+    /// Builds the expression that converts the internally-stored array field back into the
+    /// property's declared collection type. Handles arrays, generic collection interfaces,
+    /// concrete collection types with an IEnumerable constructor, and immutable collections.
+    /// Only call when <see cref="IsCollectionType"/> is true and <see cref="GetCollectionElementType"/> is non-null.
+    /// </summary>
+    public static string GetCollectionMaterialization(ITypeSymbol collectionType, string fieldExpression)
+    {
+        // The field is already an array of the element type.
+        if (collectionType is IArrayTypeSymbol)
+            return fieldExpression;
+
+        var namedType = (INamedTypeSymbol)collectionType;
+        // Stryker disable once String : ContainingNamespace is never null for types we process
+        var ns = namedType.ContainingNamespace?.ToDisplayString() ?? "";
+
+        if (ns == "System.Collections.Immutable")
+        {
+            // Concrete immutable types (ImmutableArray<T>, ImmutableList<T>, ...) expose a static
+            // CreateRange factory of the same name; immutable interfaces (IImmutableList<T>, ...)
+            // map to the factory named without the leading 'I'.
+            var factory = namedType.TypeKind == TypeKind.Interface
+                ? namedType.Name.Substring(1)
+                : namedType.Name;
+            return $"System.Collections.Immutable.{factory}.CreateRange({fieldExpression})";
+        }
+
+        // Interfaces cannot be instantiated; List<T> satisfies every generic collection interface.
+        if (namedType.TypeKind == TypeKind.Interface)
+        {
+            var elementType = GetCollectionElementType(namedType);
+            var elementTypeName = elementType!.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            return $"new System.Collections.Generic.List<{elementTypeName}>({fieldExpression})";
+        }
+
+        var concreteTypeName = namedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        return $"new {concreteTypeName}({fieldExpression})";
     }
 }
 

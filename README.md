@@ -120,6 +120,7 @@ builder.WithAllergies("Dust")
 | FAB001 | Error | `ValidInstance()` method not implemented |
 | FAB002 | Warning | Builder class name doesn't end with "Builder" |
 | FAB003 | Error | Cannot resolve a constructor for the target type |
+| FAB004 | Warning | Duplicate factory property for the same target type (only the first builder is exposed) |
 
 ## Extending the Factory
 

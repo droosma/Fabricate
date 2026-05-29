@@ -27,4 +27,12 @@ public static class DiagnosticDescriptors
         category: "Fabricate",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
+
+    public static readonly DiagnosticDescriptor DuplicateFactoryProperty = new(
+        id: "FAB004",
+        title: "Duplicate factory property",
+        messageFormat: "Multiple builders map to factory property '{0}' in class '{1}' - only the first is emitted; target types with distinct simple names or place builders in separate namespaces",
+        category: "Fabricate",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true);
 }

@@ -363,6 +363,16 @@ public partial class PatientBuilder
         DiagnosticDescriptors.CannotResolveConstructor.Category.Should().Be("Fabricate");
     }
 
+    [Fact]
+    public void DiagnosticDescriptor_FAB004_ExposesExpectedStrings()
+    {
+        DiagnosticDescriptors.DuplicateFactoryProperty.Id.Should().Be("FAB004");
+        DiagnosticDescriptors.DuplicateFactoryProperty.Title.ToString().Should().Be("Duplicate factory property");
+        DiagnosticDescriptors.DuplicateFactoryProperty.MessageFormat.ToString().Should().Be("Multiple builders map to factory property '{0}' in class '{1}' - only the first is emitted; target types with distinct simple names or place builders in separate namespaces");
+        DiagnosticDescriptors.DuplicateFactoryProperty.MessageFormat.ToString().Should().Contain("only the first is emitted");
+        DiagnosticDescriptors.DuplicateFactoryProperty.Category.Should().Be("Fabricate");
+    }
+
     private static string GenerateSource(string source, string fileName, params IIncrementalGenerator[] generators)
     {
         var compilation = TestHarness.CreateCompilation(source);
